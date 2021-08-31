@@ -1,0 +1,19 @@
+---
+- name: Edit grub config
+  hosts: nodes
+
+  tasks:
+  - name: Add lines into grub config
+    lineinfile:
+      dest: /etc/default/grub
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+      backrefs: true
+    with_items:
+      - {regexp: '^(GRUB_CMDLINE_LINUX(?!.*net.ifnames=[\d]).*)"$', line: '\1 net.ifnames=0"'}
+      - {regexp: '^(GRUB_CMDLINE_LINUX(?!.*biosdevname=[\d]).*)"$', line: '\1 biosdevname=0"'}
+
+  - name: Apply grub changes
+    command:
+       cmd: grub2-mkconfig -o /boot/grub2/grub.cfg
+...

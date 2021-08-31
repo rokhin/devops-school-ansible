@@ -1,0 +1,34 @@
+---
+- name: Apache install
+  hosts: nodes 
+  
+  tasks:
+  - name: Install httpd
+    yum: 
+      name: httpd
+      state: latest
+  
+  - name: Start httpd
+    service:
+      name: httpd
+      state: started
+      enabled: true
+
+  - name: Copy index.html
+    copy: 
+      src: 'templates/index.html'
+      dest: '/var/www/html/index.html'
+
+  - name: Check state and start Firewalld
+    service: 
+      name: firewalld
+      state: started
+      enabled: true
+ 
+  - name: Accept port 80/TCP
+    firewalld:
+      port: 80/TCP
+      state: enable
+      permanent: true
+      immediate: true
+...
