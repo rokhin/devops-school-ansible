@@ -1,0 +1,16 @@
+---
+- name : Add users
+  hosts: nodes
+  vars_files: 
+    - vars/users.yaml
+    - vars/password.yaml 
+
+  tasks:
+  - name: Create users
+    user:
+      name: '{{ item.lower() }}'
+      comment: '{{ item.lower() }}@example.com'
+      password: '{{ password | password_hash("sha512") }}'
+      update_password: on_create
+    with_items: '{{ users }}'
+...
