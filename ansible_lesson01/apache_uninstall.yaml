@@ -16,5 +16,5 @@
   - name: Deny port 80/TCP
     firewalld:
       port: 80/TCP
-      state: disable
+      state: disabled
 ...

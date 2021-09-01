@@ -27,8 +27,6 @@
  
   - name: Accept port 80/TCP
     firewalld:
-      port: 80/TCP
-      state: enable
-      permanent: true
-      immediate: true
+      port: 80/tcp
+      state: enabled
 ...
