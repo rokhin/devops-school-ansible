@@ -1,0 +1,9 @@
+---
+- name: skip host msg
+  debug:
+    msg: 'Skip node: {{ansible_os_family}} is not supported'
+
+- name: skip host
+  meta: end_host
+
+...

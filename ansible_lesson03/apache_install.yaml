@@ -1,0 +1,7 @@
+---
+- name: Apache install
+  hosts: nodes 
+  
+  roles:
+    - apache
+...

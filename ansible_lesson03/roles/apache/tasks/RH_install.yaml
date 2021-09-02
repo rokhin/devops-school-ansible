@@ -1,0 +1,16 @@
+---
+- name: Install httpd on RedHat
+  yum:
+    name: httpd
+    state: latest
+
+- name: Start httpd
+  service:
+    name: httpd
+    state: started
+    enabled: true
+
+- name: Set apache_name
+  set_fact:
+    apache_name: httpd
+...

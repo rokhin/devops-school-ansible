@@ -1,0 +1,36 @@
+---
+- name: Skip unsupported OS
+  include_tasks:
+    file: 'skip_host.yaml'
+  when: ansible_os_family != 'Debian' and ansible_os_family != 'RedHat'
+
+- name: Install Apache if RedHat
+  include_tasks:
+    file: 'RH_install.yaml'
+  when: ansible_os_family == 'RedHat'
+
+- name: Install Apache if Debian
+  include_tasks:
+    file: 'Deb_install.yaml'
+  when: ansible_os_family == 'Debian'
+
+- name: Create index.html
+  template:
+    src: 'templates/index.j2'
+    dest: '/var/www/html/index.html'
+  notify: restart apache
+
+- name: Check state and start Firewalld
+  service: 
+    name: firewalld
+    state: started
+    enabled: true
+ 
+- name: Accept port '{{ firewall.port }}/{{ firewall.proto }}'
+  firewalld:
+    port: '{{ firewall.port }}/{{ firewall.proto }}'
+    state: enabled
+    permanent: yes
+    immediate: yes
+
+...
