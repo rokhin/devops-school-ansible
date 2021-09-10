@@ -1,5 +1,5 @@
 ---
-- name: Apache install
+- name: Install and configure Apache
   hosts: nodes 
   
   roles:

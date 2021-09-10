@@ -1,0 +1,9 @@
+---
+- name: Restart vsftpd
+  service:
+    name: vsftpd
+    state: restarted
+    enabled: true
+
+- name: Restore context
+  command: 'restorecon -irv {{ ftp_path.upload }}'

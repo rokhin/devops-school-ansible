@@ -1,0 +1,65 @@
+---
+- name: Install vsftpd
+  yum:
+    name: vsftpd
+    state: latest
+
+- name: Add user ftp
+  user:
+    name: ftp
+    group: ftp
+    home: '{{ ftp_path.default }}'
+
+- name: Create ftp directories
+  file:
+    path: '{{ ftp_path.upload }}'
+    state: directory
+    recurse: yes
+    owner: ftp
+    group: ftp
+    mode: 0777
+
+- name: Configure vsftpd
+  template:
+    src: 'templates/vsftpd.conf.j2'
+    dest: '{{ftp_path.config}}'
+  notify: Restart vsftpd
+
+- name: Check state and start Firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Accept ports
+  firewalld:
+    service: ftp
+    state: enabled
+    permanent: yes
+    immediate: yes
+
+- name: SELinux - on
+  selinux:
+    state: enforcing
+    policy: targeted
+
+- name: Configure SELinux file contex
+  sefcontext:
+    target: "{{ ftp_path.upload }}"
+    setype: public_content_rw_t
+    state: present
+  notify: Restore context
+
+- name: Configure SELinux booolean
+  seboolean:
+    name: ftpd_anon_write
+    state: yes
+    persistent: yes
+
+- name: Start vsftpd
+  service:
+    name: vsftpd
+    state: started
+    enabled: true
+
+...
